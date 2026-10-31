@@ -6,7 +6,7 @@ import { BookOpen, Sparkles, ArrowRight } from 'lucide-react'
 
 interface SeasonalVerse {
   book: string
-  chapter: number
+  chapter: string | number
   verse: string
   text: string
   translation: string
@@ -169,7 +169,7 @@ export default function VerseOfTheDay() {
               <Sparkles size={13} />
               Verse of the Day
             </span>
-            <span className="text-xs font-semibold text-slate-400">• {verseData.seasonLabel}</span>
+            <span className="text-xs font-semibold text-slate-400">{verseData.seasonLabel}</span>
             <span className="text-xs font-semibold text-slate-500">({verseData.translation})</span>
           </div>
 
