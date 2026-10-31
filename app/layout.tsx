@@ -1,57 +1,61 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import type { Metadata } from 'next'
+import { Inter, Playfair_Display } from 'next/font/google'
+import './globals.css'
+import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const playfair = Playfair_Display({ 
+  subsets: ['latin'],
+  variable: '--font-playfair',
+})
 
 export const metadata: Metadata = {
-  title: {
-    default: "All Saints' Church Lelystad | English-Speaking Church Netherlands",
-    template: "%s | All Saints' Church"
-  },
-  description: "A vibrant, multicultural English-speaking church in Lelystad. Part of the Nigerian Anglican Chaplaincy Europe. Join our family for worship, community, and grace.",
-  keywords: [
-    "English church Lelystad", 
-    "Anglican church Netherlands", 
-    "International church Flevoland", 
-    "Nigerian Anglican Chaplaincy Europe", 
-    "Worship in Lelystad",
-    "Expat church Netherlands"
-  ],
-  openGraph: {
-    title: "All Saints' Church Lelystad",
-    description: "Welcome Home. Join our multicultural community in the heart of Lelystad.",
-    url: "https://your-domain.nl", // Replace with your actual domain later
-    siteName: "All Saints' Church",
-    images: [
-      {
-        url: "/og-image.jpg", // We will create this later
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  title: 'Anglican Chaplaincy Netherlands (NACE)',
+  description: 'A welcoming liturgical community rooted in historic faith and modern grace.',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Inline script to instantly apply saved theme before render, preventing flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark')
+                } else {
+                  document.documentElement.classList.remove('dark')
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300">
+
+        {/* Global Navigation Bar */}
         <Navbar />
+
+        {/* Main Content Area */}
         <main className="flex-grow">
           {children}
         </main>
-        <Footer /> {/* Add it here */}
+
+        {/* Global Footer with Discreet Admin Portal Link */}
+        <Footer />
+
       </body>
     </html>
-  );
+  )
 }

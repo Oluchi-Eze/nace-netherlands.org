@@ -1,7 +1,7 @@
 'use client'
+
 import { useState, useEffect, useRef } from 'react'
-import { BookOpen, Search, ChevronLeft, ChevronRight, ListFilter, HelpCircle, Globe, Hash } from 'lucide-react'
-import Link from 'next/link'
+import { Search, ChevronLeft, ChevronRight, ListFilter, HelpCircle, Globe, Hash } from 'lucide-react'
 
 const OLD_TESTAMENT = [
   "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
@@ -21,10 +21,9 @@ const NEW_TESTAMENT = [
 const ALL_BOOKS_IN_ORDER = [...OLD_TESTAMENT, ...NEW_TESTAMENT]
 
 const ALL_VERSIONS = [
+  { id: 'NKJV', name: 'New King James Version (NKJV)', source: 'bolls', bollsId: 70 },
   { id: 'ESV', name: 'English Standard Version (ESV)', source: 'bolls', bollsId: 6 },
   { id: 'NASB', name: 'New American Standard Bible (NASB)', source: 'bolls', bollsId: 5 },
-  { id: 'NIV', name: 'New International Version (NIV)', source: 'bolls', bollsId: 2 },
-  { id: 'NKJV', name: 'New King James Version (NKJV)', source: 'bolls', bollsId: 70 },
   { id: 'NLT', name: 'New Living Translation (NLT)', source: 'bolls', bollsId: 68 },
   { id: 'AMP', name: 'Amplified Bible (AMP)', source: 'bolls', bollsId: 67 },
   { id: 'MSG', name: 'The Message (MSG)', source: 'bolls', bollsId: 10 },
@@ -45,27 +44,11 @@ const ALL_VERSIONS = [
   { id: 'LXX', name: 'Septuagint (LXX) - Greek OT', source: 'bolls', bollsId: 61 }
 ]
 
-const BOLLS_SHORT_CODES: { [key: string]: string } = {
-  "Genesis": "Gen", "Exodus": "Exo", "Leviticus": "Lev", "Numbers": "Num", "Deuteronomy": "Deu",
-  "Joshua": "Jos", "Judges": "Jdg", "Ruth": "Rut", "1 Samuel": "1Sa", "2 Samuel": "2Sa",
-  "1 Kings": "1Ki", "2 Kings": "2Ki", "1 Chronicles": "1Ch", "2 Chronicles": "2Ch", "Ezra": "Ezr",
-  "Nehemiah": "Neh", "Esther": "Est", "Job": "Job", "Psalms": "Psa", "Proverbs": "Pro",
-  "Ecclesiastes": "Ecc", "Song of Solomon": "Sng", "Isaiah": "Isa", "Jeremiah": "Jer", "Lamentations": "Lam",
-  "Ezekiel": "Ezk", "Daniel": "Dan", "Hosea": "Hos", "Joel": "Jol", "Amos": "Amo",
-  "Obadiah": "Oba", "Jonah": "Jon", "Micah": "Mic", "Nahum": "Nam", "Habakkuk": "Hab",
-  "Zephaniah": "Zep", "Haggai": "Hag", "Zechariah": "Zec", "Malachi": "Mal", "Matthew": "Mat",
-  "Mark": "Mrk", "Luke": "Luk", "John": "Jhn", "Acts": "Act", "Romans": "Rom",
-  "1 Corinthians": "1Co", "2 Corinthians": "2Co", "Galatians": "Gal", "Ephesians": "Eph", "Philippians": "Php",
-  "Colossians": "Col", "1 Thessalonians": "1Th", "2 Thessalonians": "2Th", "1 Timothy": "1Ti", "2 Timothy": "2Ti",
-  "Titus": "Tit", "Philemon": "Phm", "Hebrews": "Heb", "James": "Jas", "1 John": "1Jn",
-  "2 John": "2Jn", "3 John": "3Jn", "Jude": "Jud", "Revelation": "Rev"
-}
-
 export default function UltimateBibleGateway() {
   const [book, setBook] = useState('John')
   const [chapter, setChapter] = useState(3)
   const [verseSelection, setVerseSelection] = useState('all')
-  const [versionObj, setVersionObj] = useState(ALL_VERSIONS[2]) // Default to NIV
+  const [versionObj, setVersionObj] = useState(ALL_VERSIONS[2])
   const [verses, setVerses] = useState<{ text: string; verse: number }[]>([])
   const [totalVersesInChapter, setTotalVersesInChapter] = useState(36)
   const [loading, setLoading] = useState(false)
@@ -121,64 +104,54 @@ export default function UltimateBibleGateway() {
     setLoading(true)
     setError('')
     try {
-      let targetUrl = ''
-      
+      let fetchedVerses: { verse: number; text: string }[] = []
+      const bookIndexId = ALL_BOOKS_IN_ORDER.findIndex(b => b.toLowerCase() === targetBook.toLowerCase()) + 1
+
       if (currentVer.source === 'bolls') {
-        const shortCode = BOLLS_SHORT_CODES[targetBook] || targetBook.substring(0, 3)
-        const useNumericEndpoint = ['VULG', 'LXX', 'CUV', 'NBG', 'LUT'].includes(currentVer.id)
+        const targetUrl = `https://bolls.life/get-chapter/${currentVer.id}/${bookIndexId}/${targetChapter}/`
+        const res = await fetch(targetUrl)
+        if (!res.ok) throw new Error('Bolls Life connection dropped.')
         
-        if (useNumericEndpoint) {
-          const bookIndexId = ALL_BOOKS_IN_ORDER.findIndex(b => b.toLowerCase() === targetBook.toLowerCase()) + 1
-          targetUrl = `https://bolls.life/get-chapter/${currentVer.bollsId}/${bookIndexId}/${targetChapter}/`
-        } else {
-          targetUrl = `https://bolls.life/get-text/${currentVer.id}/${shortCode}/${targetChapter}/`
+        const data = await res.json()
+        if (Array.isArray(data)) {
+          fetchedVerses = data.map((v: any) => ({ 
+            verse: v.verse, 
+            text: v.text ? v.text.replace(/<\/?[^>]+(>|$)/g, "").trim() : '' 
+          }))
         }
       } else {
-        targetUrl = `https://bible-api.com/${encodeURIComponent(targetBook)}+${targetChapter}?translation=${currentVer.id.toLowerCase()}`
-      }
-
-      const res = await fetch(`/api/bible?url=${encodeURIComponent(targetUrl)}`)
-      if (!res.ok) throw new Error('Proxy communication connection dropped.')
-      
-      const data = await res.json()
-
-      if (!Array.isArray(data) && !data.verses) {
-        throw new Error('Malformed JSON schema block payload response.')
-      }
-
-      const fetchedVerses = Array.isArray(data)
-        ? data.map((v: any) => ({ verse: v.verse, text: v.text }))
-        : data.verses?.map((v: any) => ({ verse: v.verse, text: v.text })) || []
-
-      if (fetchedVerses.length === 0 && currentVer.source === 'bolls') {
-        const bookIndexId = ALL_BOOKS_IN_ORDER.findIndex(b => b.toLowerCase() === targetBook.toLowerCase()) + 1
-        const retryUrl = `https://bolls.life/get-chapter/${currentVer.bollsId}/${bookIndexId}/${targetChapter}/`
-        const retryRes = await fetch(`/api/bible?url=${encodeURIComponent(retryUrl)}`)
-        const retryData = await retryRes.json()
-        const parsedRetryVerses = Array.isArray(retryData) ? retryData : []
+        const targetUrl = `https://bible-api.com/${encodeURIComponent(targetBook)}+${targetChapter}?translation=${currentVer.id.toLowerCase()}`
+        const res = await fetch(targetUrl)
+        if (!res.ok) throw new Error('Bible API connection dropped.')
         
-        if (parsedRetryVerses.length > 0) {
-          setVerses(parsedRetryVerses.map((v: any) => ({ verse: v.verse, text: v.text })))
-          setTotalVersesInChapter(parsedRetryVerses.length)
-          setLoading(false)
-          return
+        const data = await res.json()
+        if (data.verses) {
+          fetchedVerses = data.verses.map((v: any) => ({ 
+            verse: v.verse, 
+            text: v.text ? v.text.trim() : '' 
+          }))
         }
+      }
+
+      if (fetchedVerses.length === 0) {
+        throw new Error('No scripture text payload returned.')
       }
 
       setVerses(fetchedVerses)
       setTotalVersesInChapter(fetchedVerses.length)
     } catch (err) {
+      console.error(err)
       try {
-        const fallbackUrl = `https://bible-api.com/${encodeURIComponent(targetBook)}+${targetChapter}?translation=kjv`
-        const fallbackRes = await fetch(`/api/bible?url=${encodeURIComponent(fallbackUrl)}`)
+        const fallbackUrl = `https://bible-api.com/${encodeURIComponent(targetBook)}+${targetChapter}?translation=web`
+        const fallbackRes = await fetch(fallbackUrl)
         const fallbackData = await fallbackRes.json()
-        const fallbackVerses = fallbackData.verses?.map((v: any) => ({ verse: v.verse, text: v.text })) || []
+        const fallbackVerses = fallbackData.verses?.map((v: any) => ({ verse: v.verse, text: v.text.trim() })) || []
         
         setVerses(fallbackVerses)
         setTotalVersesInChapter(fallbackVerses.length)
         setError('')
       } catch {
-        setError('Could not securely align structure payload maps. Review internal local server tracking nodes.')
+        setError('Could not retrieve translation data. Please check your network connection.')
       }
     } finally {
       setLoading(false)
@@ -221,101 +194,110 @@ export default function UltimateBibleGateway() {
     : verses.filter(v => v.verse === Number(verseSelection))
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-28 pb-12 text-gray-900 selection:bg-blue-100">
-      <div className="bg-blue-950 border-b border-blue-900 text-white py-3.5 px-6 shadow-md">
-        <div className="max-w-7xl mx-auto flex justify-between items-center text-xs font-bold tracking-widest uppercase">
-          <div className="flex items-center gap-2">
-            <BookOpen size={14} className="text-blue-400" />
-            <span>All Saints' Church — Scripture</span>
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 pt-40 pb-12 selection:bg-amber-100 dark:selection:bg-amber-900/40">
+      
+      {/* Prominent Search & Control Bar (Fixed under Main Navbar) */}
+      <div className="fixed top-[87px] left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3.5 shadow-md transition-colors duration-300">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-3">
+          
+          {/* Expanded Search Reference Input */}
+          <form onSubmit={handleSearchSubmit} className="w-full md:flex-1">
+            <div className="relative flex items-center">
+              <input 
+                type="text"
+                placeholder="Search reference e.g., Romans 8, John 3"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 focus:border-amber-500 text-slate-900 dark:text-white font-medium placeholder-slate-500 dark:placeholder-slate-400 rounded-2xl py-3 pl-5 pr-12 text-sm md:text-base transition-all outline-none shadow-inner"
+              />
+              <button 
+                type="submit" 
+                className="absolute right-2.5 p-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition-all cursor-pointer shadow-sm"
+              >
+                <Search size={18} className="stroke-[2.5]" />
+              </button>
+            </div>
+          </form>
+
+          {/* Controls Group */}
+          <div className="grid grid-cols-2 gap-2 w-full md:w-auto shrink-0">
+            {/* Verse Selector */}
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 px-3.5 py-3 rounded-2xl text-slate-900 dark:text-white transition-colors">
+              <Hash size={16} className="text-amber-500 dark:text-amber-400 shrink-0" />
+              <select
+                value={verseSelection}
+                onChange={(e) => setVerseSelection(e.target.value)}
+                className="bg-transparent font-semibold outline-none w-full cursor-pointer text-slate-900 dark:text-white [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-slate-900 dark:[&>option]:text-white text-xs md:text-sm truncate"
+              >
+                <option value="all">Whole Chapter</option>
+                {Array.from({ length: totalVersesInChapter }, (_, i) => i + 1).map((vNum) => (
+                  <option key={vNum} value={vNum}>Verse {vNum}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Translation Selector */}
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 px-3.5 py-3 rounded-2xl text-slate-900 dark:text-white transition-colors">
+              <Globe size={16} className="text-amber-500 dark:text-amber-400 shrink-0" />
+              <select
+                value={versionObj.id}
+                onChange={(e) => {
+                  const match = ALL_VERSIONS.find(v => v.id === e.target.value)
+                  if (match) {
+                    setVersionObj(match)
+                  }
+                }}
+                className="bg-transparent font-semibold outline-none w-full cursor-pointer text-slate-900 dark:text-white [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-slate-900 dark:[&>option]:text-white text-xs md:text-sm truncate"
+              >
+                {ALL_VERSIONS.map((v) => (
+                  <option key={v.id} value={v.id}>{v.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <Link href="/" className="hover:text-blue-300 transition-colors">← Back to Main Website</Link>
+
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 mt-8">
-        <div className="bg-gradient-to-r from-blue-900 to-blue-950 p-6 rounded-3xl shadow-xl mb-6 text-white border border-blue-800">
-          <div className="grid md:grid-cols-4 gap-4 items-end">
-            <form onSubmit={handleSearchSubmit} className="md:col-span-2 w-full">
-              <label className="block text-xs uppercase font-black tracking-widest text-blue-300 mb-2">Search Reference</label>
-              <div className="relative">
-                <input 
-                  type="text"
-                  placeholder="e.g., Romans 8, Judges 4, John 3"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-2xl py-3 pl-5 pr-12 text-white font-medium placeholder-white/40 focus:outline-none focus:border-white focus:bg-white/15 transition-all text-sm"
-                />
-                <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-xl transition-colors cursor-pointer">
-                  <Search size={18} className="text-white" />
-                </button>
-              </div>
-            </form>
-
-            <div className="w-full">
-              <label className="block text-xs uppercase font-black tracking-widest text-blue-300 mb-2">Verses</label>
-              <div className="flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-3 rounded-2xl text-white">
-                <Hash size={16} className="text-blue-300" />
-                <select
-                  value={verseSelection}
-                  onChange={(e) => setVerseSelection(e.target.value)}
-                  className="bg-transparent font-semibold outline-none w-full cursor-pointer text-white [&>option]:text-gray-900 text-sm"
-                >
-                  <option value="all">Whole Chapter View</option>
-                  {Array.from({ length: totalVersesInChapter }, (_, i) => i + 1).map((vNum) => (
-                    <option key={vNum} value={vNum}>Verse {vNum}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="w-full">
-              <label className="block text-xs uppercase font-black tracking-widest text-blue-300 mb-2">Bible Versions</label>
-              <div className="flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-3 rounded-2xl text-white">
-                <Globe size={16} className="text-blue-300" />
-                <select
-                  value={versionObj.id}
-                  onChange={(e) => {
-                    const match = ALL_VERSIONS.find(v => v.id === e.target.value)
-                    if (match) {
-                      setVersionObj(match)
-                    }
-                  }}
-                  className="bg-transparent font-semibold outline-none w-full cursor-pointer text-white [&>option]:text-gray-900 text-sm"
-                >
-                  {ALL_VERSIONS.map((v) => (
-                    <option key={v.id} value={v.id}>{v.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      {/* Scripture View Area */}
+      <div className="max-w-9xl mx-auto px-2 mx:px-10 mt-5">
         <div className="grid lg:grid-cols-4 gap-6 items-start">
-          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-5 max-h-[75vh] overflow-y-auto lg:sticky lg:top-28">
-            <div className="flex items-center gap-2 font-black text-xs text-blue-950 uppercase tracking-widest pb-3 border-b border-gray-100 mb-4">
-              <ListFilter size={14} className="text-blue-900" />
-              <span>Select Book Index</span>
+          
+          {/* Left Book Index Panel */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 max-h-[70vh] overflow-y-auto lg:sticky lg:top-44 transition-colors duration-300">
+            <div className="flex items-center gap-2 font-black text-xs text-amber-600 dark:text-amber-400 uppercase tracking-widest pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">
+              <ListFilter size={14} className="text-amber-500" />
+              <span>Select Book</span>
             </div>
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Old Testament</h3>
+            
+            <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Old Testament</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1 mb-6">
               {OLD_TESTAMENT.map(b => (
                 <button
                   key={b}
                   onClick={() => { setBook(b); setChapter(1); setVerseSelection('all'); }}
-                  className={`text-left text-sm px-3 py-1.5 rounded-xl transition-colors font-medium truncate cursor-pointer ${book === b ? 'bg-blue-900 text-white font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-900'}`}
+                  className={`text-left text-sm px-3 py-1.5 rounded-xl transition-colors font-medium truncate cursor-pointer ${
+                    book === b 
+                      ? 'bg-amber-600 dark:bg-amber-500 text-white font-bold' 
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400'
+                  }`}
                 >
                   {b}
                 </button>
               ))}
             </div>
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">New Testament</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1">
+
+            <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">New Testament</h3>
+            <div className="grid grid-cols-9 sm:grid-cols-3 lg:grid-cols-1 gap-1">
               {NEW_TESTAMENT.map(b => (
                 <button
                   key={b}
                   onClick={() => { setBook(b); setChapter(1); setVerseSelection('all'); }}
-                  className={`text-left text-sm px-3 py-1.5 rounded-xl transition-colors font-medium truncate cursor-pointer ${book === b ? 'bg-blue-900 text-white font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-900'}`}
+                  className={`text-left text-sm px-3 py-1.5 rounded-xl transition-colors font-medium truncate cursor-pointer ${
+                    book === b 
+                      ? 'bg-amber-600 dark:bg-amber-500 text-white font-bold' 
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-amber-600 dark:hover:text-amber-400'
+                  }`}
                 >
                   {b}
                 </button>
@@ -323,85 +305,121 @@ export default function UltimateBibleGateway() {
             </div>
           </div>
 
-          <div className="lg:col-span-3 bg-white rounded-3xl border border-gray-200 shadow-sm p-6 md:p-10 min-h-[65vh] flex flex-col justify-between">
+          {/* Right Main Scripture Display */}
+          <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 md:p-10 min-h-[65vh] flex flex-col justify-between transition-colors duration-300">
             <div>
-              <div className="flex justify-between items-center border-b border-gray-100 pb-5 mb-8">
+              
+              {/* Heading & Navigation Controls */}
+              <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-5 mb-8">
                 <div>
-                  <h2 className="text-3xl font-serif font-black text-blue-950 tracking-tight">
+                  <h2 className="text-3xl font-Segoe UI Black font-black text-slate-900 dark:text-white tracking-tight">
                     {book} {chapter}{verseSelection !== 'all' && `:${verseSelection}`}
                   </h2>
-                  <p className="text-xs text-blue-600 font-black uppercase tracking-widest mt-1">
+                  <p className="text-xs text-amber-600 dark:text-amber-400 font-black uppercase tracking-widest mt-1">
                     {versionObj.name}
                   </p>
                 </div>
+
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => changeChapter('prev')}
-                    disabled={chapter <= 1 || loading}
-                    className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 disabled:opacity-40 transition-colors cursor-pointer"
+                    onClick={() => {
+                      if (isSingleChapterBook(book)) {
+                        setVerseSelection(prev => prev === 'all' ? '1' : String(Math.max(1, Number(prev) - 1)))
+                      } else {
+                        changeChapter('prev')
+                      }
+                    }}
+                    disabled={(!isSingleChapterBook(book) && chapter <= 1) || loading}
+                    className="p-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <ChevronLeft size={20} />
                   </button>
                   <button 
-                    onClick={() => changeChapter('next')}
+                    onClick={() => {
+                      if (isSingleChapterBook(book)) {
+                        setVerseSelection(prev => prev === 'all' ? '2' : String(Math.min(totalVersesInChapter, Number(prev) + 1)))
+                      } else {
+                        changeChapter('next')
+                      }
+                    }}
                     disabled={loading}
-                    className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-colors cursor-pointer"
+                    className="p-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
                   >
                     <ChevronRight size={20} />
                   </button>
                 </div>
               </div>
 
+              {/* Loading State */}
               {loading && (
-                <div className="py-24 text-center text-gray-400">
-                  <div className="w-6 h-6 border-2 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <div className="py-24 text-center text-slate-400 dark:text-slate-500">
+                  <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                   <p className="text-xs font-mono tracking-widest uppercase animate-pulse">Syncing Library Data...</p>
                 </div>
               )}
 
+              {/* Scripture Text Output */}
               {!loading && (
-                <div className="space-y-5 font-serif text-lg md:text-xl text-gray-800 leading-relaxed font-light tracking-wide">
+                <div className="space-y-5 font-Segoe UI Black text-lg md:text-xl text-slate-800 dark:text-slate-200 leading-relaxed font-light tracking-wide">
                   {displayedVerses.map((v) => (
                     <span key={v.verse} className="inline group mr-2">
-                      <sup className="text-xs font-bold font-sans text-blue-700 inline-block mr-1.5 select-none font-mono">
+                      <sup className="text-xs font-bold font-sans text-amber-600 dark:text-amber-400 inline-block mr-1.5 select-none font-mono">
                         {v.verse}
                       </sup>
-                      {v.text?.replace(/<\/?[^>]+(>|$)/g, "").trim()}{" "}
+                      {v.text}{" "}
                     </span>
                   ))}
                   {displayedVerses.length === 0 && !error && (
-                    <p className="text-gray-400 text-sm font-sans italic">No matching scriptures found inside this layout tracking view.</p>
+                    <p className="text-slate-400 dark:text-slate-500 text-sm font-sans italic">No matching scriptures found inside this layout view.</p>
                   )}
                 </div>
               )}
 
+              {/* Error Callout */}
               {error && (
-                <div className="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-xs font-medium">
+                <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 rounded-2xl text-xs font-medium">
                   {error}
                 </div>
               )}
             </div>
 
-            <div className="border-t border-gray-100 mt-12 pt-6 flex justify-between items-center text-sm text-gray-400">
-              <span className="flex items-center gap-1.5"><HelpCircle size={14}/> Compare phrasing layouts instantly by switching translations.</span>
+            {/* Bottom Footer Navigation */}
+            <div className="border-t border-slate-100 dark:border-slate-800 mt-12 pt-6 flex justify-between items-center text-sm text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5 text-xs md:text-sm">
+                <HelpCircle size={14}/> Compare phrasing layouts instantly by switching translations.
+              </span>
               <div className="flex gap-4">
                 <button 
-                  onClick={() => changeChapter('prev')} 
-                  disabled={chapter <= 1} 
-                  className="hover:text-blue-900 font-bold disabled:opacity-30 transition-colors cursor-pointer"
+                  onClick={() => {
+                    if (isSingleChapterBook(book)) {
+                      setVerseSelection(prev => prev === 'all' ? '1' : String(Math.max(1, Number(prev) - 1)))
+                    } else {
+                      changeChapter('prev')
+                    }
+                  }} 
+                  disabled={(!isSingleChapterBook(book) && chapter <= 1)} 
+                  className="hover:text-amber-600 dark:hover:text-amber-400 font-bold disabled:opacity-30 transition-colors cursor-pointer text-slate-700 dark:text-slate-300"
                 >
-                  ← Previous Chapter
+                  &larr; Previous
                 </button>
                 <button 
-                  onClick={() => changeChapter('next')} 
-                  className="hover:text-blue-900 font-bold transition-colors cursor-pointer"
+                  onClick={() => {
+                    if (isSingleChapterBook(book)) {
+                      setVerseSelection(prev => prev === 'all' ? '2' : String(Math.min(totalVersesInChapter, Number(prev) + 1)))
+                    } else {
+                      changeChapter('next')
+                    }
+                  }} 
+                  className="hover:text-amber-600 dark:hover:text-amber-400 font-bold transition-colors cursor-pointer text-slate-700 dark:text-slate-300"
                 >
-                  Next Chapter →
+                  Next &rarr;
                 </button>
               </div>
             </div>
+
           </div>
         </div>
+
       </div>
     </main>
   )

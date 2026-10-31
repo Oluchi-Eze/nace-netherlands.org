@@ -1,79 +1,224 @@
 'use client'
-import { motion } from 'framer-motion'
 
-export default function StoryPage() {
+import Link from 'next/link'
+import { ArrowRight, Church, Compass, ShieldCheck, Heart, Building2, Users, Telescope, Eye } from 'lucide-react'
+
+export default function AboutPage() {
   return (
-    <main className="bg-white min-h-screen pt-20">
-      {/* Header Section */}
-      <section className="bg-blue-900 py-24 text-center px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="text-blue-300 font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Our Journey</span>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter">OUR STORY</h1>
-        </motion.div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-['Segoe_UI_Black',sans-serif] antialiased transition-colors duration-300">
+      
+      {/* Cover Image Hero Banner */}
+      <section className="relative isolate overflow-hidden min-h-[420px] lg:min-h-[500px] px-6 py-24 lg:py-32 flex items-center justify-center border-b border-slate-800">
+        {/* Cover Background Image */}
+        <img
+          src="/../about us background.png"
+          alt="About NACE Cover"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        />
+
+        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10 text-white">
+
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-tight [text-shadow:_0_3px_6px_rgb(0_0_0_/_70%)]">
+            About Us
+          </h1>
+
+          <p className="text-slate-200 text-lg sm:text-xl max-w-3xl mx-auto font-sans font-normal leading-relaxed [text-shadow:_0_2px_4px_rgb(0_0_0_/_80%)]">
+            One family, united in Christ and bringing communities together across the Netherlands.
+          </p>
+        </div>
       </section>
 
-      {/* Content Sections */}
-      <div className="max-w-7xl mx-auto px-6 py-20 space-y-32">
-        
-        {/* Section 1: The Vision */}
-        <section className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="order-2 md:order-1"
-          >
-            <h2 className="text-4xl font-bold text-blue-950 mb-6 tracking-tight">A Place to Belong.</h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              All Saints' Church Lelystad began with a simple but profound vision: to create a spiritual home that transcends borders. We saw a need for an English-speaking community in Flevoland where faith isn't just a tradition, but a living, breathing experience of family.
-            </p>
-          </motion.div>
-          <div className="order-1 md:order-2 rounded-3xl overflow-hidden shadow-2xl transform md:rotate-2">
-            <img src="https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&q=80" alt="Worship" className="w-full h-80 object-cover" />
+      {/* Main Content Body */}
+      <div className="max-w-5xl mx-auto px-6 py-20 space-y-20">
+
+        {/* Who We Are */}
+        <section className="space-y-6">
+          <div className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
+            Identity & Calling
           </div>
+          <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
+            Who We Are
+          </h2>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg font-sans font-normal">
+            The Nigerian Anglican Chaplaincy Europe (Netherlands) is a Christian religious organisation established under the authority of the <strong>Church of Nigeria (Anglican Communion)</strong>. We exist to proclaim the Gospel of Jesus Christ, strengthen believers in their faith and bring people together through worship, fellowship and Christian service.
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg font-sans font-normal">
+            Rooted in the historic Anglican faith and tradition, we are committed to building a Christ-centred community where people can grow spiritually, find support and experience the love of God.
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-lg font-sans font-normal">
+            As a Chaplaincy serving across the Netherlands, we provide a spiritual home for believers and support the growth of local congregations united by one faith, one mission and one Lord.
+          </p>
         </section>
 
-        {/* Section 2: The Foundation (NACE) */}
-        <section className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="rounded-3xl overflow-hidden shadow-2xl transform md:-rotate-2 border-8 border-gray-50">
-            <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80" alt="Community" className="w-full h-80 object-cover" />
-          </div>
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl font-bold text-blue-950 mb-6 tracking-tight">Rooted in Heritage.</h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              While our doors are open to all, we are proudly rooted in the rich liturgical heritage of the **Nigerian Anglican Chaplaincy Europe (Netherlands)**. This foundation provides us with the depth of tradition and the global perspective that fuels our mission to reach every soul in Lelystad.
-            </p>
-          </motion.div>
-        </section>
+        <hr className="border-slate-200 dark:border-slate-800" />
 
-        {/* Section 3: ANBI / Transparency */}
-        <section className="bg-gray-50 rounded-[3rem] p-10 md:p-20 text-center border border-gray-100">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
-          >
-            <h2 className="text-3xl font-bold text-blue-950 mb-6">Transparency & Trust</h2>
-            <p className="text-gray-600 mb-8 italic">
-              All Saints' Church is committed to the highest standards of financial and administrative integrity. As a registered ANBI entity through the Chaplaincy, we ensure that every gift is used for the glory of God and the service of our community.
-            </p>
-            <div className="flex justify-center gap-4">
-               <button className="bg-blue-900 text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-blue-800 transition">
-                 DOWNLOAD ANBI REPORT
-               </button>
+        {/* Vision & Mission */}
+        <section className="space-y-12">
+          <div className="space-y-4">
+            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
+            <Eye size={28} className="text-amber-400" />
+          </div>
+            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
+              Our Vision
             </div>
-          </motion.div>
+            <h3 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+              Building a Vibrant Christian Community
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+              To build a vibrant and growing Christian community across the Netherlands, where people are brought to Christ, believers are strengthened in faith and communities are transformed by the love of God.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
+            <Telescope size={28} className="text-amber-400" />
+          </div>
+            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
+              Our Mission
+            </div>
+            <h3 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+              Proclaiming Christ & Demonstrating Compassion
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+              Our mission is to proclaim the Gospel of Jesus Christ, promote the knowledge of God and nurture a community of believers committed to living according to the teachings and example of Christ.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+              We pursue this through worship, evangelism, biblical teaching, Christian education, pastoral care and community engagement. We seek to make the message of Christ known, encourage spiritual growth and serve individuals, families and communities with love and compassion.
+            </p>
+          </div>
         </section>
+
+        <hr className="border-slate-200 dark:border-slate-800" />
+
+        {/* Our Anglican Heritage */}
+        <section className="space-y-6">
+          <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <ShieldCheck className="text-red-600 dark:text-red-400 shrink-0" size={32} />
+            Our Anglican Heritage
+          </h3>
+          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+            Our identity and ministry are grounded in the historic faith and tradition of the Anglican Communion. Established under the authority of the Church of Nigeria (Anglican Communion), we uphold the historic faith, doctrine, Sacraments and discipline of the Church.
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+            We value the authority of Holy Scripture, the teaching of Jesus Christ, reverent worship and the sacramental life of the Church. These foundations guide our faith, ministry and service.
+          </p>
+        </section>
+
+        <hr className="border-slate-200 dark:border-slate-800" />
+
+        {/* What We Do */}
+        <section className="space-y-12">
+          <div className="space-y-3">
+            <div className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
+              Ministry Pillars
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+              What We Do
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-lg font-sans">
+              Our work focuses on the spiritual, moral and social well-being of individuals and communities.
+            </p>
+          </div>
+
+          <div className="space-y-10">
+            <div className="space-y-2">
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <Church size={22} className="text-amber-500 shrink-0" />
+                Worship and Spiritual Growth
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal pl-9">
+                Providing opportunities for worship, prayer, biblical teaching and the celebration of the Sacraments.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <Compass size={22} className="text-red-500 shrink-0" />
+                Evangelism and Mission
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal pl-9">
+                Sharing the Good News of Jesus Christ and reaching people with the message of the Gospel.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <Building2 size={22} className="text-blue-500 shrink-0" />
+                Christian Education
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal pl-9">
+                Encouraging biblical understanding, discipleship and the development of Christian values.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <ShieldCheck size={22} className="text-emerald-500 shrink-0" />
+                Pastoral Care
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal pl-9">
+                Offering spiritual guidance, counselling and support to individuals and families.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <Heart size={22} className="text-purple-500 shrink-0" />
+                Community Support
+              </h4>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal pl-9">
+                Demonstrating Christ's love through compassion, practical assistance and concern for the wider community.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <hr className="border-slate-200 dark:border-slate-800" />
+
+        {/* One Chaplaincy, Growing Congregations */}
+        <section className="space-y-6">
+          <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <Users className="text-blue-600 dark:text-blue-400 shrink-0" size={30} />
+            One Chaplaincy, Growing Congregations
+          </h3>
+          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+            We believe that faith grows stronger when people come together. As the Chaplaincy develops, we seek to establish and support congregations in different parts of the Netherlands, making worship, fellowship and spiritual guidance accessible to more people.
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+            Each congregation is part of a wider Christian family, sharing the same faith, values and mission while serving its local community. Together, we are building a connected community where everyone has the opportunity to worship, belong, grow and serve.
+          </p>
+        </section>
+
+        <hr className="border-slate-200 dark:border-slate-800" />
+
+        {/* Our Commitment */}
+        <section className="space-y-8 pb-8">
+          <div className="space-y-4">
+            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
+              Looking Forward
+            </div>
+            <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+              Our Commitment
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+              We are committed to remaining faithful to the Gospel, preserving our Anglican heritage, nurturing believers and extending the love of Christ to the communities around us.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
+              Our journey is one of faith, service and growth. As we continue to develop across the Netherlands, we trust in God's guidance and remain dedicated to the mission He has entrusted to us.
+            </p>
+          </div>
+
+          <div className="pt-6 flex flex-wrap gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-700 via-blue-800 to-red-700 hover:from-blue-600 hover:to-red-600 text-white font-bold text-base px-8 py-4 rounded-2xl shadow-xl transition-all hover:scale-[1.02] font-sans"
+            >
+              Contact Chaplaincy Office <ArrowRight size={18} />
+            </Link>
+          </div>
+        </section>
+
       </div>
-    </main>
+    </div>
   )
 }
