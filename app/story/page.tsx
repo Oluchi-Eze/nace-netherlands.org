@@ -33,9 +33,6 @@ export default function AboutPage() {
 
         {/* Who We Are */}
         <section className="space-y-6">
-          <div className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
-            Identity & Calling
-          </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
             Who We Are
           </h2>
@@ -89,29 +86,11 @@ export default function AboutPage() {
         </section>
 
         <hr className="border-slate-200 dark:border-slate-800" />
-
-        {/* Our Anglican Heritage */}
-        <section className="space-y-6">
-          <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <ShieldCheck className="text-red-600 dark:text-red-400 shrink-0" size={32} />
-            Our Anglican Heritage
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
-            Our identity and ministry are grounded in the historic faith and tradition of the Anglican Communion. Established under the authority of the Church of Nigeria (Anglican Communion), we uphold the historic faith, doctrine, Sacraments and discipline of the Church.
-          </p>
-          <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
-            We value the authority of Holy Scripture, the teaching of Jesus Christ, reverent worship and the sacramental life of the Church. These foundations guide our faith, ministry and service.
-          </p>
-        </section>
-
         <hr className="border-slate-200 dark:border-slate-800" />
 
         {/* What We Do */}
         <section className="space-y-12">
           <div className="space-y-3">
-            <div className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
-              Ministry Pillars
-            </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
               What We Do
             </h2>
@@ -177,10 +156,6 @@ export default function AboutPage() {
 
         {/* One Chaplaincy, Growing Congregations */}
         <section className="space-y-6">
-          <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Users className="text-blue-600 dark:text-blue-400 shrink-0" size={30} />
-            One Chaplaincy, Growing Congregations
-          </h3>
           <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-sans font-normal">
             We believe that faith grows stronger when people come together. As the Chaplaincy develops, we seek to establish and support congregations in different parts of the Netherlands, making worship, fellowship and spiritual guidance accessible to more people.
           </p>
@@ -194,9 +169,6 @@ export default function AboutPage() {
         {/* Our Commitment */}
         <section className="space-y-8 pb-8">
           <div className="space-y-4">
-            <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
-              Looking Forward
-            </div>
             <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
               Our Commitment
             </h3>

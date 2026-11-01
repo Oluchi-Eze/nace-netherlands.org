@@ -104,9 +104,6 @@ export default function NACEHomePage() {
       {/* Who We Are & Mission Section */}
       <section className="py-20 px-6 max-w-5xl mx-auto space-y-16">
         <div className="space-y-6">
-          <div className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
-            Who We Are
-          </div>
           <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
             A Christian family committed to sharing the love of Christ.
           </h2>
@@ -129,9 +126,6 @@ export default function NACEHomePage() {
         <hr className="border-slate-200 dark:border-slate-800" />
 
         <div className="space-y-6">
-          <div className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400 font-sans">
-            Our Mission
-          </div>
           <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
             Proclaiming the Gospel & Nurturing Believers
           </h3>
@@ -149,9 +143,6 @@ export default function NACEHomePage() {
         <div className="max-w-5xl mx-auto space-y-16">
           
           <div className="space-y-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
-              What We Do
-            </span>
             <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white">
               Centred on the Gospel & Community Well-Being
             </h2>
@@ -220,45 +211,11 @@ export default function NACEHomePage() {
         </div>
       </section>
 
-      {/* Rooted in Anglican Faith & Growing Together Section */}
-      <section className="py-20 px-6 max-w-5xl mx-auto space-y-16">
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Building2 className="text-red-600 dark:text-red-400 shrink-0" size={30} />
-            Rooted in the Anglican Faith
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal">
-            Our faith and ministry are firmly rooted in the historic Anglican tradition, founded on the authority of Holy Scripture, the teachings of Jesus Christ and the rich heritage of the Anglican Communion.
-          </p>
-          <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal">
-            Established under the authority of the Church of Nigeria (Anglican Communion), the Nigerian Anglican Chaplaincy Europe (Netherlands) upholds the historic faith, doctrine, Sacraments and discipline of the Church. We cherish biblical teaching, reverent worship, sacramental life and the proclamation of the Gospel.
-          </p>
-        </div>
-
-        <hr className="border-slate-200 dark:border-slate-800" />
-
-        <div className="space-y-6">
-          <h3 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Users className="text-blue-600 dark:text-blue-400 shrink-0" size={30} />
-            Growing Together in Christ
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal">
-            We believe that our Christian journey is best lived together. The Church is a family where we encourage one another, celebrate together, support one another through difficult times and grow in the knowledge and love of God.
-          </p>
-          <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-sans font-normal">
-            At NACE Netherlands, we seek to foster a community characterised by faith, love, unity, compassion and service. Our desire is to see lives transformed by the Gospel, families strengthened by Christian values and communities touched by the love of Christ.
-          </p>
-        </div>
-      </section>
-
       {/* Member Parishes Overview Section */}
       <section id="churches" className="py-20 px-6 bg-slate-100/60 dark:bg-slate-900/30 border-t border-slate-200 dark:border-slate-800 transition-colors duration-300">
         <div className="max-w-5xl mx-auto space-y-12">
           
           <div className="space-y-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 font-sans">
-              Find a Church Near You
-            </span>
             <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 dark:text-white">
               NACE Member Parishes & Fellowships
             </h2>
@@ -330,13 +287,6 @@ export default function NACEHomePage() {
       {currentVerse && (
         <section className="py-16 px-6 bg-slate-100 dark:bg-slate-900/60 border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-5xl mx-auto space-y-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/20 px-3 py-1 rounded-full font-sans">
-                <Sparkles size={13} />
-                Verse of the Day ({currentVerse.date || todayDateString})
-              </span>
-              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 font-sans">{currentVerse.theme}</span>
-            </div>
 
             <blockquote className="text-xl md:text-2xl font-normal leading-relaxed text-slate-800 dark:text-slate-100 italic">
               &ldquo;{currentVerse.quotation}&rdquo;
