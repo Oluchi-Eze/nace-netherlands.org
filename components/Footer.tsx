@@ -79,11 +79,6 @@ export default function Footer() {
                   Privacy Policy
                 </Link>
               </li>
-              <li>
-                <Link href="/cookie-policy" className="hover:text-amber-500 dark:hover:text-amber-400 transition-colors">
-                  Cookie Policy
-                </Link>
-              </li>
             </ul>
           </div>
 
