@@ -71,7 +71,7 @@ export default function NACEHomePage() {
           preload="auto"
           aria-hidden="true"
         >
-          <source src="/nace%20video.mp4" type="video/mp4" />
+          <source src="/Nace%20hero.mp4" type="video/mp4" />
           Your browser does not support HTML video.
         </video>
 
