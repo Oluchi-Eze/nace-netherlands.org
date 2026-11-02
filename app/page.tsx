@@ -62,16 +62,18 @@ export default function NACEHomePage() {
 
       {/* Hero Section */}
       <section className="relative isolate overflow-hidden min-h-[650px] lg:min-h-[750px] px-6 py-24 lg:py-32 flex items-center justify-center">
-<video 
-  autoPlay 
-  muted 
-  loop 
-  playsInline 
-  className="w-full h-full object-cover"
->
-  <source src="/nace-video.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+        <video
+          className="absolute inset-0 -z-20 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source src="/nace%20video.mp4" type="video/mp4" />
+          Your browser does not support HTML video.
+        </video>
 
         <div className="absolute inset-0 -z-10 bg-slate-950/65" />
 
