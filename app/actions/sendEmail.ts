@@ -23,9 +23,9 @@ export async function sendEmail(formData: FormData) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'NACE Netherlands <info-nace-netherlands.org>',
+      from: 'NACE Netherlands <onboarding@resend.dev>',
       // Temporary testing recipient (must match your Resend signup email while using onboarding@resend.dev)
-      to: 'info-nace-netherlands.org', 
+      to: 'nacenetherlands@gmail.com', 
       replyTo: email,
       subject: `[${inquiryType}] New Contact Form Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nReason: ${inquiryType}\n\nMessage:\n${message}`,
