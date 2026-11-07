@@ -120,6 +120,8 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 pt-8 border-t border-slate-200 dark:border-slate-800/80 gap-4">
           <p>© {currentYear} Anglican Chaplaincy Netherlands (NACE). All rights reserved.</p>
+          <p>Powerd by </p>
+        <Link href="https://www.honouredhands.com" className="hover:text-white">HonouredHands</Link>
         </div>
 
       </div>
