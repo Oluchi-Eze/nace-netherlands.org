@@ -122,6 +122,14 @@ export default function Footer() {
           <p>© {currentYear} Anglican Chaplaincy Netherlands (NACE). All rights reserved.</p>
           <p>Powerd by 
           <Link href="https://www.honouredhands.com" className="hover:text-white"> HonouredHands</Link>
+          <Image
+                src="/Honoured.png"
+                alt="NACE Netherlands Emblem"
+                width={200}
+                height={80}
+                className="h-10 w-auto object-contain"
+                priority
+              />
           </p>
         </div>
 
