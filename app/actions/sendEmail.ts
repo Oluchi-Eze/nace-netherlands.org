@@ -2,11 +2,19 @@
 
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function sendEmail(formData: FormData) {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    console.error('RESEND_API_KEY missing from environment variables.');
+    return { success: false, error: 'Server configuration error: Missing API Key.' };
+  }
+
+  const resend = new Resend(apiKey);
+
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
+  const inquiryType = (formData.get('inquiry_type') as string) || 'General Inquiry';
   const message = formData.get('message') as string;
 
   if (!name || !email || !message) {
@@ -15,15 +23,16 @@ export async function sendEmail(formData: FormData) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'NACE Netherlands <onboarding@resend.dev>', // Replace with your verified domain in production
-      to: 'info@nace-netherlands.org', // Replace with your target recipient email
-      subject: `New Contact Form Message from ${name}`,
+      from: 'NACE Netherlands <onboarding@resend.dev>', // Replace with your domain once verified in Resend
+      to: 'info@nace-netherlands.org',
+      subject: `[${inquiryType}] New Contact Form Message from ${name}`,
       replyTo: email,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      text: `Name: ${name}\nEmail: ${email}\nReason: ${inquiryType}\n\nMessage:\n${message}`,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Reason for Inquiry:</strong> ${inquiryType}</p>
         <p><strong>Message:</strong></p>
         <p>${message.replace(/\n/g, '<br>')}</p>
       `,
